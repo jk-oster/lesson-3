@@ -5,6 +5,8 @@ import ContactComponent from "./components/ContactComponent.js";
 import AboutComponent from "./components/AboutComponent.js";
 import HeroTeaserComponent from "./components/HeroTeaserComponent.js";
 import TodoComponent from "./components/TodoComponent.js";
+import QuizComponent from "./components/QuizComponent.js";
+import AiChatComponent from "./components/AiChatComponent.js";
 
 import KWM_Route from "./core/kwm-route.js";
 import KWM_Router from "./core/kwm-router.js";
@@ -36,6 +38,16 @@ const myRouter = new KWM_Router({
         confirm("🛡️ Security check: Everything ok?")
           ? true
           : KWM_Router.redirect("/404"),
+    }),
+    new KWM_Route({
+        slug: '/quiz',
+        name: 'Quiz 🧠',
+        component: new QuizComponent()
+    }),
+    new KWM_Route({
+        slug: '/chat',
+        name: 'AI Chat 🤖',
+        component: new AiChatComponent()
     }),
     new KWM_Route({
       slug: "/404",
