@@ -19,7 +19,8 @@ export default class QuizComponent extends KWM_Component {
 
     template() {
         return /*html*/`
-
+        <h1>Quiz UI goes here</h1>
+        
     `;
     }
 }

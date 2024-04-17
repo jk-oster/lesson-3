@@ -31,6 +31,7 @@ export default class AiChatComponent extends KWM_Component {
     
     template() {
         return /*html*/`
+        <h1>Chat UI goes here</h1>
         
     `;
     }
