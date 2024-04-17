@@ -54,7 +54,7 @@ class QuizModel {
     }
 
     async fetchCategories() {
-        if (!this.categories.value || this.categories.value?.lenth === 0) {
+        if (!this.categories.value || this.categories.value?.length == 0) {
             const resp = await fetch(`${this.apiRoot}/category`).then(res => res.json());
             this.categories.value = resp;
         }

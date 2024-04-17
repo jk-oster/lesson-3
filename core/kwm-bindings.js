@@ -28,12 +28,15 @@ export default class KWM_Bindings {
     }
 
     bind() {
+        // const run = () => {
         this.applyBindings(this.container);
+        // }
+        // setTimeout(run, 0); // Wait one tick - setTimeout gives the initial rendering cycle time to complete
     }
 
     // Need to run AFTER the template / component was rendered
     applyBindings(container) {
-        const containerHtml = container.innerHTML;
+        const containerHtml = container.innerHTML; // container.template()
 
         // Bind values
         for (let [x, selector, attributeName, variableName] of containerHtml.matchAll(this.valueBindRegex)) {
@@ -45,12 +48,13 @@ export default class KWM_Bindings {
             })
         }
 
-        // (Bonus) Bind Listeners
+        // Bind Listeners
         for (let [x, selector, listenerType, listenerFunctionName] of containerHtml.matchAll(this.listenerBindRegex)) {
             container.querySelectorAll(`[${selector}="${listenerFunctionName}"]`).forEach(elem => {
                 const listenerFunction = this.bindingData[listenerFunctionName.trim()];
                 if (listenerFunction) {
-                    elem.addEventListener(listenerType, listenerFunction.bind(this.bindingData));
+                    // elem.addEventListener(listenerType, listenerFunction.bind(this.bindingData));
+                    KWM_Bindings.setSingleEventListener(elem, listenerType, listenerFunction.bind(this.bindingData));
                 } else console.warn(`No listenerFunction with name "${listenerFunctionName}" found in bindings:`, this.bindingData, elem);
             })
         }
@@ -60,7 +64,7 @@ export default class KWM_Bindings {
         KWM_Bindings.setAttribute(elem, observable, attribute);
         observable.subscribe(() => KWM_Bindings.setAttribute(elem, observable, attribute));
 
-        // (Bonus) 2-way-data-binding - if applicable register input listeners
+        // (optional) 2-way-data-binding - if applicable register input listeners 
         if (
             (elem.tagName === 'SELECT' || elem.tagName === 'INPUT') &&
             (attribute === 'value' || attribute === 'checked')
@@ -69,29 +73,36 @@ export default class KWM_Bindings {
         }
     }
 
-    // (Bonus)
     static setAttribute(elem, observable, attribute) {
-        // All other attributes e.g. src, href, value,... need no mapping
         const mapping = {
-            text: "innerText", // kwm-bind-text="..." -> binds innerText
-            innertext: "innerText", // kwm-bind-innertext="..." -> binds innerText
-            html: "innerHTML",  // kwm-bind-html="..." -> binds innerHTML
-            innerhtml: "innerHTML", // kwm-bind-innerhtml="..." -> binds innerHTML
+            text: "innerText",
+            innertext: "innerText",
+            html: "innerHTML",
+            innerhtml: "innerHTML",
         };
 
         const attributeName = mapping[attribute] ?? attribute;
         elem[attributeName] = observable.value;
     }
 
-    // (Bonus)
     static applyInputListeners(inputElem, observable) {
         if (inputElem.tagName === 'SELECT') {
-            inputElem.addEventListener('change', () => observable.value = inputElem.options[inputElem.selectedIndex].value);
+            inputElem.onchange = () => observable.value = inputElem.options[inputElem.selectedIndex].value;
         } else if (inputElem.type === 'checkbox' || inputElem.type === 'radio') {
-            inputElem.addEventListener('change', () => observable.value = inputElem.checked);
+            inputElem.onchange = () => observable.value = inputElem.checked;
         } else {
-            inputElem.addEventListener('keyup', () => observable.value = inputElem.value);
-            inputElem.addEventListener('change', () => observable.value = inputElem.value);
+            inputElem.onkeyup = () => observable.value = inputElem.value;
+            inputElem.onchange = () => observable.value = inputElem.value;
+        }
+    }
+
+    // Registers new event listener, skip if there already is the listener registered
+    static setSingleEventListener(elem, type, callback) {
+        if (!elem) {
+            throw new Error('🚨 Element is ' + elem);
+        }
+        if (!elem.hasOwnProperty('on' + type)) {
+            elem['on' + type] = callback
         }
     }
 }
