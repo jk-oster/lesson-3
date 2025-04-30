@@ -90,7 +90,7 @@ export default class QuizComponent extends KWM_Component {
                     <button kwm-listen-click="this.answerQuestion('False')">❌False</button>
                 </div>
 
-                <div kwm-if="!this.currentQuestion.value" kwm-debug>
+                <div kwm-if="!this.currentQuestion.value && !this.displaySolution.value">
                     <label for="numQuestions">Number of questions:</label>
                     <input id="numQuestions" type="number" $value="numberOfQuestions" max="25" min="1" />
                     
@@ -112,13 +112,13 @@ export default class QuizComponent extends KWM_Component {
                     <p>${this.answers.value.filter(answer => answer.correct).length} correct out of ${this.answers.value.length}</p>
                     
                     ${this.answers.value.map(answer => /*html*/`
-                        <div class="${answer.correct ? 'correct' : 'wrong'}">
+                        <div class="answer ${answer.correct ? 'correct' : 'wrong'}">
                             <b><i>${answer.question}</i></b>
                             <p>Your answer: ${answer.answer}, Solution: ${answer.correct ? '✅' : '❌'}</p>
                         </div>
                     `).join('')}
 
-                    <button kwm-listen-click="reset">Reset</button>
+                    <button kwm-listen-click="reset">Start New Quiz</button>
                 </div>
         </section>
     `;

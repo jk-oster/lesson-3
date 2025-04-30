@@ -1,9 +1,16 @@
 /* Quiz 🧠 */
 
+.answer {
+    border-radius: 5px;
+    border: 2px solid black;
+    padding: 5px;
+    margin-bottom: 3px;
+}
+
 .wrong {
-    background-color: #ff0000;
+    border: 2px solid #ff0000;
 }
 
 .correct {
-    background-color: #00ff00;
+    border: 2px solid #00ff00;
 }
